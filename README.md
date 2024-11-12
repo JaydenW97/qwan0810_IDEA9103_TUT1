@@ -1,34 +1,25 @@
 # qwan0810_9103_TUT1
 
-## Time Based Monet Style Animation - Iteration 2
+## Time Based Monet Style Animation - Final Iteration
 
 ### Project Description
-This stage presents the change from dusk to night with mainly time-based transition effects. The animation starts from early dusk and gradually moves into the night scene, with a colour gradient effect allowing the sky, ocean, reflections and architecture to show the visual transition from dusk to night.
+In this final version of the code, the representation of the gradient night effect has been further improved to ensure that the resulting image more realistically represents the transition from dusk to night. Compared to the second iteration, the main changes are in the control of the colour gradient so that the night effect is not completely dark and the style of the painting remains the same. The colour of the buildings is also gradually changed to the dark grey tones of the night.
 
 ### Interaction Description
-Load page: open the project file in the browser and the animation will start automatically.
+The artwork automatically starts showing a time gradient from dusk to night after the page loads.
 
-Observe the transition effect: the canvas will gradually change from a dusk to a night state for about 20 seconds.
+The animation completes the colour gradient in about 20 seconds and the final effect is a darker shade of night.
 
-### Iteration 2: Technical details
-#### Realisation method
-The colour gradient is driven by time-based transitions.
+### Final Iteration - Change Details
+Progress control: I added the finalNightProgress variable to keep the final effect of the night at 80% complete, avoiding the creation of a completely dark image and allowing the night to retain some detail. This makes the night transition smoother and more layered.
 
-Over time, the colours in the canvas are gradually changed from day tones to night tones using the lerpColor() function.
+Final adjustments to building colours: In contrast to the second iteration, in this version the building colours are gradually transitioned to a darker grey in the move() function, rather than simply using a static night colour. By doing this, the buildings don't completely lose their layers at night, but instead take on a dark grey colour for the night.
 
-#### Adjustments
-Gradually change the sky from light blue to dark blue to simulate the change from dusk to night.
-
-A deeper blue colour is added to the ocean and reflection section as well as light bright spots to reflect the sparkling effect of the night.
-
-Buildings are gradually darkened to eventually take on the dark grey colour of the night, retaining some detail but bringing in the nighttime atmosphere.
+Other parts of the adjustment: a softer colour gradient for the waves and the sky, and the use of random transparency and rotation to make each rectangle look more like an oil painting brushstroke as it is drawn.
 
 ### Technical implementation explanation
-Colour transitions are implemented using the lerpColor() function, which smoothly transitions from the initial colour to the ending colour of the night.
+Colour interpolation: In the move() function, use the lerpColor() method to gradually interpolate the initial sunset colour to the darker colour of the night. Avoid complete darkening of the night effect by controlling the maximum value of progress to finalNightProgress.
 
-The move() method controls the colour gradient of each part, and the drawRect() method adds a slight offset and rotation to simulate the texture of a paintbrush.
+Gradient detail enhancement: random(-2, 2) applies small offsets to the x and y coordinates of each rectangle and adds a random rotation angle in the drawRect() function to give the image a fine gradient and texture.
 
-The time is controlled by the progress variable, limiting the animation to 20 seconds.
 
-### Inspiration
-This project is inspired by Monet's pursuit of the beauty of dusk. We hope to show the moving transition effect from dusk to night through animation, so that the audience can feel the process of dusk gradually receding and night deepening.

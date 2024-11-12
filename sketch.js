@@ -5,7 +5,8 @@ let seaRects = []; // Store rectangles for the sea part
 let mainRects = []; // Store rectangles for the main part
 let reflectionRects = []; // Store rectangles for the reflection part
 let transitionTime = 20000; // 20 seconds transition time
-let startTime;  // Record the start time
+let startTime; // Record the start time
+let finalNightProgress = 0.8; // Control the final night effect progress to avoid complete darkness
 
 function preload() {
     // Preload images
@@ -39,7 +40,7 @@ function rectInit() {
     sea.loadPixels();
     reflection.loadPixels();
     main.loadPixels();
-
+  
     // Iterate over the entire canvas to create rectangles based on pixel data
     for (let x = 0; x < width; x += size / 2 ) {
         for (let y = 0; y < height; y += size / 2) {
@@ -99,8 +100,8 @@ function rectInit() {
 function draw() {
     background(255); // Set the background to white to avoid overlap
 
-    let elapsedTime = millis() - startTime; // Calculate elapsed time
-    let progress = constrain(elapsedTime / transitionTime, 0, 1); // Calculate progress of the transition (0 to 1)
+    let elapsedTime = millis() - startTime;  // Calculate elapsed time
+    let progress = constrain(elapsedTime / transitionTime, 0, finalNightProgress); // Control progress to avoid complete darkness
 
     // Draw all rectangles representing the sky part
     for (let i = 0; i < skyRects.length; i++) {
@@ -146,15 +147,23 @@ class Rect {
         } else if (this.part === "sea" || this.part === "reflection") {
             this.endColor = color(20, 30, 50, random(100, 150)); // Darker sea color with slight highlights
         } else if (this.part === "main") {
-            this.endColor = color(this.startR * 0.4, this.startG * 0.4, this.startB * 0.4); // Darker building color
+            // Set the final target color for the building to a dark gray tone
+            this.endColor = color(50, 50, 50); // Darker gray for nighttime building
         }
     }
 
     // Move function to calculate color transition effect
     move(progress) {
-        let targetColor = lerpColor(color(this.startR, this.startG, this.startB), this.endColor, progress);
+        let targetColor;
+
+        if (this.part === "main") {
+            // Gradually transition the building color to dark gray as night progresses
+            targetColor = lerpColor(color(this.startR, this.startG, this.startB), this.endColor, progress);
+        } else {
+            targetColor = lerpColor(color(this.startR, this.startG, this.startB), this.endColor, progress);
+        }
         
-        // Update rectangle's RGB values to the interpolated color
+        // Apply the interpolated color to RGB values
         this.r = red(targetColor);
         this.g = green(targetColor);
         this.b = blue(targetColor);
@@ -170,4 +179,3 @@ class Rect {
         pop();
     }
 }
-
