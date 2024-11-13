@@ -1,12 +1,12 @@
 let sky, sea, reflection, main;
-let size = 10; // Rectangle size
+let size = 10; // Size of rectangle 
 let skyRects = []; // Store rectangles for the sky part
 let seaRects = []; // Store rectangles for the sea part
 let mainRects = []; // Store rectangles for the main part
 let reflectionRects = []; // Store rectangles for the reflection part
 let transitionTime = 20000; // 20 seconds transition time
 let startTime; // Record the start time
-let finalNightProgress = 0.8; // Control the final night effect progress to avoid complete darkness
+let finalNightProgress = 0.8; // Control the final night effect progress to avoid 
 
 function preload() {
     // Preload images
@@ -24,7 +24,7 @@ function setup() {
     angleMode(DEGREES); // Set angle mode to degrees
     rectMode(CENTER); // Set rectangle drawing mode to be centered
     noStroke(); // No border for rectangles
-    rectInit();  // Initialize rectangles
+    rectInit(); // Initialize rectangles
     startTime = millis(); // Record start time
 }
 
@@ -40,14 +40,18 @@ function rectInit() {
     sea.loadPixels();
     reflection.loadPixels();
     main.loadPixels();
-  
-    // Iterate over the entire canvas to create rectangles based on pixel data
+
+    // Get the pixel indices of a specific RGB value of a image, and draw rectangles
+    // We got the code reference this website:
+    // https://editor.p5js.org/iscodd/sketches/7-_pQbU9G 
+    // https://stackoverflow.com/questions/24689403/index-a-pixel-using-one-loop-or-two-loops
     for (let x = 0; x < width; x += size / 2 ) {
         for (let y = 0; y < height; y += size / 2) {
             let index = (x + y * width) * 4; // Calculate the index in the pixel array
 
             // Sky Rectangles
             if (sky.pixels[index + 3] > 0) { // Check if the alpha value is greater than 0
+                // Speed up the operation so that the program does not have to calculate the blank part of the image
                 skyRects.push(new Rect(
                     x, y,
                     sky.pixels[index],
@@ -103,10 +107,11 @@ function draw() {
     let elapsedTime = millis() - startTime;  // Calculate elapsed time
     let progress = constrain(elapsedTime / transitionTime, 0, finalNightProgress); // Control progress to avoid complete darkness
 
+
     // Draw all rectangles representing the sky part
     for (let i = 0; i < skyRects.length; i++) {
-        skyRects[i].move(progress);
-        skyRects[i].drawRect();
+        skyRects[i].move(progress); 
+        skyRects[i].drawRect(); // Draw the rectangle
     }
 
     // Draw all rectangles representing the sea part
@@ -128,21 +133,25 @@ function draw() {
     }
 }
 
-// Rectangle class with gradual transition effect
+// Rectangle class, used to store data for each rectangle and implement drawing and movement logic
+// We got the code reference this website:
+// https://editor.p5js.org/Jaekook/sketches/SywJ5wg57
+// https://p5js.org/reference/p5/class/
 class Rect {
+    // Data for a class is a collection of variables
     constructor(x, y, r, g, b, a, part) {
-        this.x = x; // Rectangle x-coordinate
-        this.y = y; // Rectangle y-coordinate
-        this.startR = r; // Initial red value
-        this.startG = g; // Initial green value
-        this.startB = b; // Initial blue value
-        this.a = a; // Alpha (transparency)
-        this.part = part; // Part type (sky, sea, reflection, or building)
+        this.x = x; // x-coordinate of the rectangle
+        this.y = y; // y-coordinate of the rectangle
+        this.startR = r; // Initial Red value
+        this.startG = g; // Initial Green value
+        this.startB = b; // Initial Blue value
+        this.a = a; // Alpha (transparency) value
+        this.part = part; // Part of the image the rectangle belongs to
         this.offsetX = random(-2, 2);  // Random horizontal offset to simulate brushstrokes
         this.offsetY = random(-2, 2); // Random vertical offset
 
         // Set night colors for each part
-        if (this.part === "sky") {
+         if (this.part === "sky") {
             this.endColor = color(20, 30, 60); // Night sky color
         } else if (this.part === "sea" || this.part === "reflection") {
             this.endColor = color(20, 30, 50, random(100, 150)); // Darker sea color with slight highlights
@@ -152,6 +161,7 @@ class Rect {
         }
     }
 
+  
     // Move function to calculate color transition effect
     move(progress) {
         let targetColor;
@@ -169,13 +179,14 @@ class Rect {
         this.b = blue(targetColor);
     }
 
+
     drawRect() {
-        push();
-        noStroke();
+        push(); // Save the current drawing settings
+        noStroke(); // No border for the rectangle
         fill(this.r, this.g, this.b, this.a * random(0.8, 1)); // Apply color with slight transparency variation
         translate(this.x + this.offsetX, this.y + this.offsetY); // Offset to simulate brushstroke effect
         rotate(random(-0.1, 0.1)); // Slight rotation for randomness
-        rect(0, 0, size + random(-1, 1), size + random(-1, 1)); // Draw rectangle with slight size variation
-        pop();
+        rect(0, 0, size + random(-1, 1), size + random(-1, 1)); // Draw rectangle 
+        pop(); // Restore the previous drawing settings
     }
 }
